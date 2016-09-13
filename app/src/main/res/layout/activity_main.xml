@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText android:id="@+id/edtProcessos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nº Processos"
+            android:maxLength="3"
+            android:numeric="integer"
+            android:layout_weight="3.0"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/edtTempo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Segundos"
+            android:maxLength="2"
+            android:numeric="integer"
+            android:layout_weight="3.0"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btnOk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vai"
+            android:layout_weight="3.0"
+            android:onClick="click" />
+    </LinearLayout>
+    <TextView android:textSize="18dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:id="@+id/txt4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="STATUS DO PROCESSADOR"
+        android:textAlignment="center" />
+
+    <TextView
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:id="@+id/execucao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/txtRelatorio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAlignment="center" />
+
+    <ExpandableListView
+        android:id="@+id/lstView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp" />
+
+</LinearLayout>
