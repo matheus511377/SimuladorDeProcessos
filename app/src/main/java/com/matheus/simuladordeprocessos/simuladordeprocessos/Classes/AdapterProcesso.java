@@ -1,4 +1,4 @@
-package com.matheus.simuladordeprocessos.Classes;
+package com.matheus.simuladordeprocessos.simuladordeprocessos.Classes;
 
 /**
  * Created by Matheus on 13/09/2016.
@@ -8,7 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.matheus.simuladordeprocessos.C0196R;
+import com.matheus.simuladordeprocessos.R;
+
 import java.util.List;
 
 public class AdapterProcesso extends BaseAdapter {
@@ -50,34 +51,34 @@ public class AdapterProcesso extends BaseAdapter {
         ViewHolder vh;
         View view = convertView;
         if (view == null) {
-            view = this.inflater.inflate(C0196R.layout.adapter_processo, parent, false);
+            view = inflater.inflate(R.layout.adapter_processos, parent, false);
             vh = new ViewHolder();
-            vh.txtPID = (TextView) view.findViewById(C0196R.id.txtID);
-            vh.txtTE = (TextView) view.findViewById(C0196R.id.txtTE);
-            vh.txtT = (TextView) view.findViewById(C0196R.id.txtT);
-            vh.txt3 = (TextView) view.findViewById(C0196R.id.txt3);
+            vh.txtPID = (TextView) view.findViewById(R.id.txtID);
+            vh.txtTE = (TextView) view.findViewById(R.id.txtTE);
+            vh.txtT = (TextView) view.findViewById(R.id.txtT);
+            vh.txt3 = (TextView) view.findViewById(R.id.txt3);
             view.setTag(vh);
         } else {
             vh = (ViewHolder) view.getTag();
         }
-        Fila fila = (Fila) this.filas.get(position);
+        Fila fila = filas.get(position);
         vh.txtPID.setText(String.valueOf(fila.getId()));
-        if (this.qualFila == "APTOS") {
-            vh.txtTE.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoExecutando()));
-            vh.txtT.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
-        } else if (this.qualFila == "BLOQUEADOS") {
-            vh.txtTE.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoExecutandoTotalES()));
-            vh.txtT.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotalES()));
-        } else if (this.qualFila == "DESTRUIDOS") {
-            vh.txtTE.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
-            vh.txtT.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
+        if (qualFila == "APTOS") {
+            vh.txtTE.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoExecutando()));
+            vh.txtT.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
+        } else if (qualFila == "BLOQUEADOS") {
+            vh.txtTE.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoExecutandoTotalES()));
+            vh.txtT.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotalES()));
+        } else if (qualFila == "DESTRUIDOS") {
+            vh.txtTE.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
+            vh.txtT.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
         }
         return view;
     }
 
     private int buscaPosicaoListaProcessos(int id) {
         for (int i = 0; i <= this.ListaProcessos.size(); i++) {
-            if (((Processo) this.ListaProcessos.get(i)).getId() == id) {
+            if ((ListaProcessos.get(i)).getId() == id) {
                 return i;
             }
         }

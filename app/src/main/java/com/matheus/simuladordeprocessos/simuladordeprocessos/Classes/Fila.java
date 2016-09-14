@@ -1,4 +1,4 @@
-package com.matheus.simuladordeprocessos.Classes;
+package com.matheus.simuladordeprocessos.simuladordeprocessos.Classes;
 
 /**
  * Created by Matheus on 13/09/2016.

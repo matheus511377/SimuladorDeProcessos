@@ -1,4 +1,4 @@
-package com.matheus.simuladordeprocessos.Classes;
+package com.matheus.simuladordeprocessos.simuladordeprocessos.Classes;
 
 /**
  * Created by Matheus on 13/09/2016.
@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import com.matheus.simuladordeprocessos.C0196R;
+import com.matheus.simuladordeprocessos.R;
+
 import java.util.HashMap;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class adapterListViewEspancivel extends BaseExpandableListAdapter {
     }
 
     public int getChildrenCount(int groupPosition) {
-        return ((List) this.lstItensGrupos.get(getGroup(groupPosition))).size();
+        return (lstItensGrupos.get(getGroup(groupPosition))).size();
     }
 
     public Object getGroup(int groupPosition) {
@@ -69,10 +70,10 @@ public class adapterListViewEspancivel extends BaseExpandableListAdapter {
 
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = ((LayoutInflater) this.context.getSystemService("layout_inflater")).inflate(C0196R.layout.pai_adapter, null);
+            convertView = inflater.inflate(R.layout.pai_adapter, null);
         }
-        TextView tvQtde = (TextView) convertView.findViewById(C0196R.id.tvQtde);
-        ((TextView) convertView.findViewById(C0196R.id.tvGrupo)).setText((String) getGroup(groupPosition));
+        TextView tvQtde = (TextView) convertView.findViewById(R.id.tvQtde);
+        ((TextView) convertView.findViewById(R.id.tvGrupo)).setText((String) getGroup(groupPosition));
         tvQtde.setText(String.valueOf(getChildrenCount(groupPosition)));
         return convertView;
     }
@@ -81,29 +82,29 @@ public class adapterListViewEspancivel extends BaseExpandableListAdapter {
         ViewHolder vh;
         View view = convertView;
         if (view == null) {
-            view = this.inflater.inflate(C0196R.layout.adapter_processo, parent, false);
+            view =inflater.inflate(R.layout.adapter_processos, parent, false);
             vh = new ViewHolder();
-            vh.txtPID = (TextView) view.findViewById(C0196R.id.txtID);
-            vh.txtTE = (TextView) view.findViewById(C0196R.id.txtTE);
-            vh.txtT = (TextView) view.findViewById(C0196R.id.txtT);
-            vh.txt3 = (TextView) view.findViewById(C0196R.id.txt3);
+            vh.txtPID = (TextView) view.findViewById(R.id.txtID);
+            vh.txtTE = (TextView) view.findViewById(R.id.txtTE);
+            vh.txtT = (TextView) view.findViewById(R.id.txtT);
+            vh.txt3 = (TextView) view.findViewById(R.id.txt3);
             view.setTag(vh);
         } else {
             vh = (ViewHolder) view.getTag();
         }
         Fila fila = (Fila) getChild(groupPosition, childPosition);
         vh.txtPID.setText(String.valueOf(fila.getId()));
-        if (((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getEstado() == "BLOQUEADO") {
-            vh.txtTE.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoExecutandoTotalES()));
-            vh.txtT.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotalES()));
+        if ((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getEstado() == "BLOQUEADO") {
+            vh.txtTE.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoExecutandoTotalES()));
+            vh.txtT.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotalES()));
         }
-        if (((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getEstado() == "APTO") {
-            vh.txtTE.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoExecutando()));
-            vh.txtT.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
+        if ((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getEstado() == "APTO") {
+            vh.txtTE.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoExecutando()));
+            vh.txtT.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
         }
-        if (((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getEstado() == "DESTRUIDO") {
-            vh.txtTE.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
-            vh.txtT.setText(String.valueOf(((Processo) this.ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
+        if ((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getEstado() == "DESTRUIDO") {
+            vh.txtTE.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
+            vh.txtT.setText(String.valueOf((ListaProcessos.get(buscaPosicaoListaProcessos(fila.getId()))).getTempoTotal()));
         }
         return view;
     }
@@ -113,8 +114,8 @@ public class adapterListViewEspancivel extends BaseExpandableListAdapter {
     }
 
     private int buscaPosicaoListaProcessos(int id) {
-        for (int i = 0; i <= this.ListaProcessos.size(); i++) {
-            if (((Processo) this.ListaProcessos.get(i)).getId() == id) {
+        for (int i = 0; i <= ListaProcessos.size(); i++) {
+            if ((ListaProcessos.get(i)).getId() == id) {
                 return i;
             }
         }
