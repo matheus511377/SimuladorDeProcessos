@@ -16,6 +16,15 @@ public class Processo {
     private int tempoExecutandoTotalES;
     private int tempoTotal;
     private int tempoTotalES;
+    private long tempoEspera;
+
+    public long getTempoEspera() {
+        return tempoEspera;
+    }
+
+    public void setTempoEspera(long tempoEspera) {
+        this.tempoEspera = tempoEspera;
+    }
 
     public Processo() {
         this.solicitouHD = false;

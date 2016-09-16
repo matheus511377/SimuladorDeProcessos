@@ -2,23 +2,15 @@ package com.matheus.simuladordeprocessos.simuladordeprocessos.Classes;
 
 /**
  * Created by Matheus on 13/09/2016.
- */import android.content.Context;
+ */
+import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-//import android.support.v7.widget.helper.ItemTouchHelper.Callback;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import com.matheus.simuladordeprocessos.BuildConfig;
-import com.matheus.simuladordeprocessos.R;
-import com.matheus.simuladordeprocessos.simuladordeprocessos.Classes.Fila;
-import com.matheus.simuladordeprocessos.simuladordeprocessos.Classes.Processo;
-import com.matheus.simuladordeprocessos.simuladordeprocessos.Classes.adapterListViewEspancivel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,6 +60,8 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
     private TextView texto;
     private TextView txtRelatorio;
     private int ultmPID;
+    private long executandoParaApto = 0;
+    private long tempoEspera = 0 ;
 
     public SegundoPlano(Context context, TextView txtExecutando, ExpandableListView lstView, int NumeroDeProcessos, long tempo, Button btnOk, TextView txtRelatorio) {
         this.numeroFilaAptos = 0;
@@ -116,6 +110,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
         this.lstGrupo.add("HD");
         this.lstGrupo.add("VIDEO");
         this.lstGrupo.add("IMPRESSORA");
+
         HashMap<String, List<Fila>> lstItensGrupo = new HashMap();
         lstItensGrupo.put(this.lstGrupo.get(0), this.filaAptos);
         lstItensGrupo.put(this.lstGrupo.get(1), this.filaDestruido);
@@ -137,7 +132,19 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
         super.onPostExecute(aVoid);
         this.btnOK.setEnabled(true);
         this.listViewEspancivel.setVisibility(View.INVISIBLE);
-        this.txtRelatorio.setText(Html.fromHtml("N\u00ba de processos criados: " + this.NumeroDeProcessos + "<br>" + "Tempo total em ciclos: " + this.ciclos + "<br>" + "Tempo Total m\u00e9dio por processo: " + tempoTotalMedioCiclos() + "<br>" + "Qtd. de processos em cada estado: <br> APTO:" + this.NumeroDeProcessos + "<br>EXECU\u00c7\u00c3O: " + this.NumeroDeProcessos + "<br>HD: " + this.qtdHD + "<br>IMPRESSORA: " + BuildConfig.FLAVOR + this.qtdImpressora + "<br>VIDEO: " + this.qtdVideo));
+        this.txtRelatorio.setText(Html.fromHtml("" +
+                "N\u00ba de processos criados: "+ this.NumeroDeProcessos + "<br>" +
+                "Tempo total em ciclos: " + this.ciclos + "<br>" +
+                "Tempo Total m\u00e9dio por processo: " + tempoTotalMedioCiclos() + "<br>" +
+                "Qtd. de processos em cada estado: <br>" +
+                "APTO:" + this.NumeroDeProcessos +
+                "<br>EXECU\u00c7\u00c3O: " + this.NumeroDeProcessos + "<br>" +
+                "HD: " + this.qtdHD + "<br>" +
+                "IMPRESSORA: " + BuildConfig.FLAVOR + this.qtdImpressora + "<br>" +
+                "VIDEO: " + this.qtdVideo + "<br>" +
+                "Tempo espera medio APTOS: " + tempoEspera + "<br>" +
+                "Tempo Exedido: " + executandoParaApto));
+
     }
 
     protected void onProgressUpdate(Integer... values) {
@@ -149,8 +156,9 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
     protected Void doInBackground(Integer... params) {
         while (this.filaDestruido.size() < this.NumeroDeProcessos) {
             this.ciclos++;
+            tempoEspera ++;
             try {
-                Thread.sleep(this.Tempo * 1000);
+                Thread.sleep(this.Tempo * 100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -163,77 +171,82 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
                 processo.setTempoTotal(this.random.nextInt(200) + 100);
                 processo.setTempoExecutando(0);
                 processo.setNumeroCiclosExecutando(0);
+                processo.setTempoEspera(tempoEspera);
                 this.listaProcesso.add(processo);
                 this.numeroFilaAptos++;
                 this.filaAptos.add(new Fila(this.id, this.numeroFilaAptos));
             }
-            if (this.filaAptos.size() > 0 || this.processadorExecutando) {
-                if (!this.processadorExecutando) {
-                    this.posicaoProcesso = buscaPosicaoListaProcessos(((Fila) this.filaAptos.get(0)).getId());
-                    this.status = Integer.toString(((Fila) this.filaAptos.get(0)).getId());
-                    this.ultmPID = ((Fila) this.filaAptos.get(0)).getId();
-                    this.filaAptos.remove(0);
-                    this.processadorExecutando = true;
+            if (filaAptos.size() > 0 || this.processadorExecutando) {
+                if (!processadorExecutando) {
+                    posicaoProcesso = buscaPosicaoListaProcessos((this.filaAptos.get(0)).getId());
+                    status = Integer.toString((filaAptos.get(0)).getId());
+                    ultmPID = (filaAptos.get(0)).getId();
+                    filaAptos.remove(0);
+                    processadorExecutando = true;
+                    listaProcesso.get(posicaoProcesso).setTempoEspera(tempoEspera - listaProcesso.get(posicaoProcesso).getTempoEspera());
                 }
                 if (this.posicaoProcesso != -1) {
-                    ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setEstado("EM EXECU\u00c7\u00c3O");
-                    ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setTempoExecutando(((Processo) this.listaProcesso.get(this.posicaoProcesso)).getTempoExecutando() + 1);
-                    ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setNumeroCiclosExecutando(((Processo) this.listaProcesso.get(this.posicaoProcesso)).getNumeroCiclosExecutando() + 1);
+                    ( this.listaProcesso.get(this.posicaoProcesso)).setEstado("EM EXECU\u00c7\u00c3O");
+                    ( this.listaProcesso.get(this.posicaoProcesso)).setTempoExecutando(( this.listaProcesso.get(this.posicaoProcesso)).getTempoExecutando() + 1);
+                    ( this.listaProcesso.get(this.posicaoProcesso)).setNumeroCiclosExecutando(( this.listaProcesso.get(this.posicaoProcesso)).getNumeroCiclosExecutando() + 1);
                     if (this.random.nextInt(100) <= 1) {
                         this.randomTemp = this.random.nextInt(3);
                         if (this.randomTemp == 1) {
-                            if (((Processo) this.listaProcesso.get(this.posicaoProcesso)).isSolicitouHD()) {
-                                ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setSolicitouHD(true);
-                            } else {
-                                this.qtdHD++;
+                            if (!(this.listaProcesso.get(this.posicaoProcesso)).isSolicitouHD()) {
+                               listaProcesso.get(this.posicaoProcesso).setSolicitouHD(true);
+                               qtdHD++;
                             }
-                            ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setRecursoSolicitado("HD");
-                            ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setTempoTotalES(this.random.nextInt(200) + 100);
+                            listaProcesso.get(this.posicaoProcesso).setRecursoSolicitado("HD");
+                            (this.listaProcesso.get(this.posicaoProcesso)).setTempoTotalES(this.random.nextInt(200) + 100);
                             this.numeroFilaHD++;
-                            this.filaHD.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaHD));
+                            this.filaHD.add(new Fila((listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaHD));
+
                         } else if (this.randomTemp == 2) {
-                            if (((Processo) this.listaProcesso.get(this.posicaoProcesso)).isSolicitouVideo()) {
-                                ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setSolicitouVideo(true);
-                            } else {
+                            if (!listaProcesso.get(this.posicaoProcesso).isSolicitouVideo()) {
+                                listaProcesso.get(posicaoProcesso).setSolicitouVideo(true);
                                 this.qtdVideo++;
                             }
-                            ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setRecursoSolicitado("VID");
-                            ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setTempoTotalES(this.random.nextInt(100) + 100);
+                            listaProcesso.get(this.posicaoProcesso).setRecursoSolicitado("VID");
+                            listaProcesso.get(this.posicaoProcesso).setTempoTotalES(this.random.nextInt(100) + 100);
                             this.numeroFilaVideo++;
-                            this.filaVideo.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaVideo));
+                            this.filaVideo.add(new Fila(( listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaVideo));
+
                         } else {
-                            if (((Processo) this.listaProcesso.get(this.posicaoProcesso)).isSolicitouImpressora()) {
-                                ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setSolicitouImpressora(true);
-                            } else {
+                            if (!(listaProcesso.get(this.posicaoProcesso)).isSolicitouImpressora()) {
+                                listaProcesso.get(this.posicaoProcesso).setSolicitouImpressora(true);
                                 this.qtdImpressora++;
                             }
-                            ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setRecursoSolicitado("IMP");
-                            ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setTempoTotalES(this.random.nextInt(100) + 500);
+                            (this.listaProcesso.get(this.posicaoProcesso)).setRecursoSolicitado("IMP");
+                            (this.listaProcesso.get(this.posicaoProcesso)).setTempoTotalES(this.random.nextInt(100) + 500);
                             this.numeroFilaImpressora++;
                             this.filaImpressora.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaImpressora));
                         }
-                        ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setEstado("BLOQUEADO");
-                        ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setNumeroCiclosExecutando(0);
-                        ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setTempoExecutandoTotalES(0);
-                        this.numeroFilaBloqueados++;
-                        this.filaBloqueados.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaBloqueados));
-                        this.processadorExecutando = false;
-                        this.status = "RECURSO DE ENTRADA E SAIDA SOLICITADO";
+                        listaProcesso.get(this.posicaoProcesso).setEstado("BLOQUEADO");
+                        listaProcesso.get(this.posicaoProcesso).setNumeroCiclosExecutando(0);
+                        listaProcesso.get(this.posicaoProcesso).setTempoExecutandoTotalES(0);
+
+                        numeroFilaBloqueados++;
+                        filaBloqueados.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaBloqueados));
+                        processadorExecutando = false;
+                        status = "RECURSO DE ENTRADA E SAIDA SOLICITADO";
                     }
-                    if (((Processo) this.listaProcesso.get(this.posicaoProcesso)).getTempoExecutando() < ((Processo) this.listaProcesso.get(this.posicaoProcesso)).getTempoTotal()) {
-                        this.status = "PID: " + this.ultmPID + "  TE: " + ((Processo) this.listaProcesso.get(this.posicaoProcesso)).getTempoExecutando() + " T: " + ((Processo) this.listaProcesso.get(this.posicaoProcesso)).getTempoTotal();
-                        if (((Processo) this.listaProcesso.get(this.posicaoProcesso)).getNumeroCiclosExecutando() == 50) {
-                            ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setEstado("APTO");
-                            ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setNumeroCiclosExecutando(0);
-                            this.numeroFilaAptos++;
-                            this.filaAptos.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaAptos));
-                            this.processadorExecutando = false;
+                    if ((listaProcesso.get(this.posicaoProcesso)).getTempoExecutando() < this.listaProcesso.get(posicaoProcesso).getTempoTotal()) {
+                        this.status = "PID: " + this.ultmPID + "  TE: " + listaProcesso.get(this.posicaoProcesso).getTempoExecutando() + " T: " + ( this.listaProcesso.get(this.posicaoProcesso)).getTempoTotal();
+                        if (( this.listaProcesso.get(this.posicaoProcesso)).getNumeroCiclosExecutando() == 50) {
+                            executandoParaApto ++;
+                            (this.listaProcesso.get(this.posicaoProcesso)).setEstado("APTO");
+                            (this.listaProcesso.get(this.posicaoProcesso)).setNumeroCiclosExecutando(0);
+
+                            numeroFilaAptos++;
+                            filaAptos.add(new Fila(( this.listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaAptos));
+                            processadorExecutando = false;
                         }
                     } else {
-                        ((Processo) this.listaProcesso.get(this.posicaoProcesso)).setEstado("DESTRUIDO");
-                        this.numeroFilaDestruido++;
-                        this.filaDestruido.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaDestruido));
-                        this.processadorExecutando = false;
+                        listaProcesso.get(posicaoProcesso).setEstado("DESTRUIDO");
+
+                        numeroFilaDestruido++;
+                        filaDestruido.add(new Fila((listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaDestruido));
+                        processadorExecutando = false;
                     }
                 }
             } else {
@@ -245,12 +258,12 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
                     this.processadorExecutandoHD = true;
                 }
                 if (this.posicaoProcessoHD != -1) {
-                    ((Processo) this.listaProcesso.get(this.posicaoProcessoHD)).setTempoExecutandoTotalES(((Processo) this.listaProcesso.get(this.posicaoProcessoHD)).getTempoExecutandoTotalES() + 1);
-                    if (((Processo) this.listaProcesso.get(this.posicaoProcessoHD)).getTempoTotalES() <= ((Processo) this.listaProcesso.get(this.posicaoProcessoHD)).getTempoExecutandoTotalES()) {
+                    (listaProcesso.get(this.posicaoProcessoHD)).setTempoExecutandoTotalES((listaProcesso.get(posicaoProcessoHD)).getTempoExecutandoTotalES() + 1);
+                    if ((listaProcesso.get(this.posicaoProcessoHD)).getTempoTotalES() <= (listaProcesso.get(this.posicaoProcessoHD)).getTempoExecutandoTotalES()) {
                         this.numeroFilaAptos++;
-                        ((Processo) this.listaProcesso.get(this.posicaoProcessoHD)).setEstado("APTO");
-                        ((Processo) this.listaProcesso.get(this.posicaoProcessoHD)).setTempoExecutandoTotalES(0);
-                        this.filaAptos.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcessoHD)).getId(), this.numeroFilaAptos));
+                        (this.listaProcesso.get(this.posicaoProcessoHD)).setEstado("APTO");
+                        ( this.listaProcesso.get(this.posicaoProcessoHD)).setTempoExecutandoTotalES(0);
+                        this.filaAptos.add(new Fila((this.listaProcesso.get(this.posicaoProcessoHD)).getId(), this.numeroFilaAptos));
                         this.filaBloqueados.remove(buscaPosicaoFilaBloqueados(((Fila) this.filaHD.get(0)).getId()));
                         this.filaHD.remove(0);
                         this.processadorExecutandoHD = false;
@@ -263,7 +276,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
                     this.processadorExecutandoVideo = true;
                 }
                 if (this.posicaoProcessoVideo != -1) {
-                    ((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).setTempoExecutandoTotalES(((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).getTempoExecutandoTotalES() + 1);
+                    (this.listaProcesso.get(this.posicaoProcessoVideo)).setTempoExecutandoTotalES((this.listaProcesso.get(this.posicaoProcessoVideo)).getTempoExecutandoTotalES() + 1);
                     if (((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).getTempoTotalES() <= ((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).getTempoExecutandoTotalES()) {
                         this.numeroFilaAptos++;
                         ((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).setEstado("APTO");
@@ -326,8 +339,10 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
         this.f3i = 0;
         while (this.f3i < this.listaProcesso.size()) {
             this.tempoTotalMedioCiclos = ((long) ((Processo) this.listaProcesso.get(this.f3i)).getTempoTotal()) + this.tempoTotalMedioCiclos;
+            tempoEspera += listaProcesso.get(f3i).getTempoEspera();
             this.f3i++;
         }
+        tempoEspera = tempoEspera/NumeroDeProcessos;
         return this.tempoTotalMedioCiclos / ((long) this.NumeroDeProcessos);
     }
 
