@@ -158,7 +158,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
             this.ciclos++;
             tempoEspera ++;
             try {
-                Thread.sleep(this.Tempo * 100);
+                Thread.sleep(this.Tempo * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -337,6 +337,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
 
     private long tempoTotalMedioCiclos() {
         this.f3i = 0;
+        tempoEspera = 0;
         while (this.f3i < this.listaProcesso.size()) {
             this.tempoTotalMedioCiclos = ((long) ((Processo) this.listaProcesso.get(this.f3i)).getTempoTotal()) + this.tempoTotalMedioCiclos;
             tempoEspera += listaProcesso.get(f3i).getTempoEspera();
