@@ -43,6 +43,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
     public int numeroFilaImpressora;
     public int numeroFilaVideo;
     private int posicaoProcesso;
+    private int teste;
     private int posicaoProcessoHD;
     private int posicaoProcessoImpressora;
     private int posicaoProcessoVideo;
