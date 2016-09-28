@@ -159,7 +159,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
             this.ciclos++;
             tempoEspera ++;
             try {
-                Thread.sleep(this.Tempo * 1000);
+                Thread.sleep(this.Tempo * 200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -240,6 +240,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
 
                             numeroFilaAptos++;
                             filaAptos.add(new Fila(( this.listaProcesso.get(this.posicaoProcesso)).getId(), this.numeroFilaAptos));
+                            listaProcesso.get(posicaoProcesso).setTempoEspera(tempoEspera);
                             processadorExecutando = false;
                         }
                     } else {
@@ -265,6 +266,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
                         (this.listaProcesso.get(this.posicaoProcessoHD)).setEstado("APTO");
                         ( this.listaProcesso.get(this.posicaoProcessoHD)).setTempoExecutandoTotalES(0);
                         this.filaAptos.add(new Fila((this.listaProcesso.get(this.posicaoProcessoHD)).getId(), this.numeroFilaAptos));
+                        listaProcesso.get(posicaoProcesso).setTempoEspera(tempoEspera);
                         this.filaBloqueados.remove(buscaPosicaoFilaBloqueados(((Fila) this.filaHD.get(0)).getId()));
                         this.filaHD.remove(0);
                         this.processadorExecutandoHD = false;
@@ -283,6 +285,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
                         ((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).setEstado("APTO");
                         ((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).setTempoExecutandoTotalES(0);
                         this.filaAptos.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).getId(), this.numeroFilaAptos));
+                        listaProcesso.get(posicaoProcesso).setTempoEspera(tempoEspera);
                         this.filaBloqueados.remove(buscaPosicaoFilaBloqueados(((Fila) this.filaVideo.get(0)).getId()));
                         this.filaVideo.remove(0);
                         this.processadorExecutandoVideo = false;
@@ -301,6 +304,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
                         ((Processo) this.listaProcesso.get(this.posicaoProcessoImpressora)).setEstado("APTO");
                         ((Processo) this.listaProcesso.get(this.posicaoProcessoImpressora)).setTempoExecutandoTotalES(0);
                         this.filaAptos.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcessoImpressora)).getId(), this.numeroFilaAptos));
+                        listaProcesso.get(posicaoProcesso).setTempoEspera(tempoEspera);
                         this.filaBloqueados.remove(buscaPosicaoFilaBloqueados(((Fila) this.filaImpressora.get(0)).getId()));
                         this.filaImpressora.remove(0);
                         this.processadorExecutandoImpressora = false;
