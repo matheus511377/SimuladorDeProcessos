@@ -266,7 +266,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
                         (this.listaProcesso.get(this.posicaoProcessoHD)).setEstado("APTO");
                         ( this.listaProcesso.get(this.posicaoProcessoHD)).setTempoExecutandoTotalES(0);
                         this.filaAptos.add(new Fila((this.listaProcesso.get(this.posicaoProcessoHD)).getId(), this.numeroFilaAptos));
-                        listaProcesso.get(posicaoProcesso).setTempoEspera(tempoEspera);
+                        listaProcesso.get(posicaoProcessoHD).setTempoEspera(tempoEspera);
                         this.filaBloqueados.remove(buscaPosicaoFilaBloqueados(((Fila) this.filaHD.get(0)).getId()));
                         this.filaHD.remove(0);
                         this.processadorExecutandoHD = false;
@@ -285,7 +285,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
                         ((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).setEstado("APTO");
                         ((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).setTempoExecutandoTotalES(0);
                         this.filaAptos.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcessoVideo)).getId(), this.numeroFilaAptos));
-                        listaProcesso.get(posicaoProcesso).setTempoEspera(tempoEspera);
+                        listaProcesso.get(posicaoProcessoVideo).setTempoEspera(tempoEspera);
                         this.filaBloqueados.remove(buscaPosicaoFilaBloqueados(((Fila) this.filaVideo.get(0)).getId()));
                         this.filaVideo.remove(0);
                         this.processadorExecutandoVideo = false;
@@ -304,7 +304,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
                         ((Processo) this.listaProcesso.get(this.posicaoProcessoImpressora)).setEstado("APTO");
                         ((Processo) this.listaProcesso.get(this.posicaoProcessoImpressora)).setTempoExecutandoTotalES(0);
                         this.filaAptos.add(new Fila(((Processo) this.listaProcesso.get(this.posicaoProcessoImpressora)).getId(), this.numeroFilaAptos));
-                        listaProcesso.get(posicaoProcesso).setTempoEspera(tempoEspera);
+                        listaProcesso.get(posicaoProcessoImpressora).setTempoEspera(tempoEspera);
                         this.filaBloqueados.remove(buscaPosicaoFilaBloqueados(((Fila) this.filaImpressora.get(0)).getId()));
                         this.filaImpressora.remove(0);
                         this.processadorExecutandoImpressora = false;
