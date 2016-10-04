@@ -159,7 +159,7 @@ public class SegundoPlano extends AsyncTask<Integer, Integer, Void> {
             this.ciclos++;
             tempoEspera ++;
             try {
-                Thread.sleep(this.Tempo * 200);
+                Thread.sleep(this.Tempo * 600);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
